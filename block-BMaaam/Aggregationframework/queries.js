@@ -1,7 +1,7 @@
 // 1. Find all users who are active.
 db.users.aggregate([{ $match: { isActive: true } }]);
 // 2. Find all users whose name includes `blake` case insensitive.
-
+// 
 // 3. Find all males.
 db.users.aggregate([{ $match: { gender: "male" } }]);
 // 4. Find all active males.
@@ -57,9 +57,9 @@ db.users.aggregate([ {$match: { gender:'male' favouriteFruit: 'banana' }}, {$gro
 // 24. Group all females by their favoriteFruit.
 db.users.aggregate([ {$match : {gender : "female"}},{$group : {_id : "$favoriteFruit"} , count :{$sum : 1}}])
 // 25. Scan all the document to retrieve all eyeColors(use db.COLLECTION_NAME.distinct);
-
+db.users.distinct('eyeColor')
 // 26. Find all apple loving blue eyed female working in 'USA'. Sort them by their registration date in descending order.
-
+db.users.aggregate([{ $match: { gender: 'female', favoriteFruit: 'apple', eyeColor: 'blue' 'company.location.country': 'USA' } },{ $sort: { registered: -1 } },]).pretty();
 // 27. Find all 18+ inactive men and return only the fields specified below in the below provided format
 
 // ```js
@@ -72,4 +72,10 @@ db.users.aggregate([ {$match : {gender : "female"}},{$group : {_id : "$favoriteF
 //     location: ''
 //   }
 // }
+db.users.aggregate([{$match: {gender: 'male',isActive: 'false', age:{$gt :18} }}, { $project: { name: 1, email: '$company:email', identity: {
+
+    eye: '$eyeColor',
+    phone: '$company.phone',
+    location: '$company.location'
+    } } }]).pretty()
 // ```
